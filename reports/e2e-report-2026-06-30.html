@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kabigon Shop Sort v1.3.6 — End-to-End Test Report</title>
+  <style>
+    :root {
+      --bg: #faf9f7;
+      --card: #fff;
+      --text: #1a1a1a;
+      --muted: #6b6b6b;
+      --pass: #0d7a3e;
+      --pass-bg: #e8f5ee;
+      --border: #e5e2dd;
+      --accent: #815564;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 40px 20px 64px; }
+    header { margin-bottom: 32px; }
+    h1 { font-size: 1.75rem; margin: 0 0 8px; color: var(--accent); }
+    .meta { color: var(--muted); font-size: 0.95rem; }
+    .badge {
+      display: inline-block;
+      background: var(--pass-bg);
+      color: var(--pass);
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      margin-top: 12px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    h2 { font-size: 1.15rem; margin: 0 0 16px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    th { font-weight: 600; background: #f5f3f0; }
+    tr:last-child td { border-bottom: none; }
+    .pass { color: var(--pass); font-weight: 600; }
+    code, .url { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85rem; word-break: break-all; }
+    ul { margin: 0; padding-left: 1.25rem; }
+    li { margin-bottom: 6px; }
+    footer { margin-top: 32px; color: var(--muted); font-size: 0.85rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Kabigon Shop Sort — End-to-End Test Report</h1>
+      <p class="meta">
+        Site: <strong>kabigonshop.com</strong> · Version: <strong>1.3.6</strong> ·
+        Deploy target: WPCode snippet <strong>11822</strong> ·
+        Test date: <strong>30 June 2026</strong>
+      </p>
+      <span class="badge">All critical tests passed</span>
+    </header>
+
+    <section>
+      <h2>Executive summary</h2>
+      <p>
+        The client-reported bug — <strong>Best selling</strong> on the KEYTAG category showed low-ID products instead of true best sellers (e.g. Psyduck on page 6) — is <strong>resolved</strong>.
+        Elementor Loop Grid <em>Current Query</em> now receives WooCommerce SQL ordering before pagination.
+      </p>
+      <ul>
+        <li><strong>Root cause:</strong> Elementor secondary query used <code>suppress_filters</code> and bypassed <code>posts_clauses</code>; v1.3.5’s late <code>wp</code> hook ran after the main query executed.</li>
+        <li><strong>Fix (v1.3.6):</strong> Force <code>suppress_filters = false</code>, hook <code>elementor/query/{id}</code>, register <code>posts_clauses</code> on <code>init</code> when <code>?orderby=</code> is present.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Test matrix</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Test</th>
+            <th>URL</th>
+            <th>Expected</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Best selling (KEYTAG)</td>
+            <td class="url">/product-category/keytag/?orderby=popularity</td>
+            <td>Product <strong>10679</strong> (Psyduck) first on page 1</td>
+            <td class="pass">PASS</td>
+          </tr>
+          <tr>
+            <td>Popularity vs Store API</td>
+            <td>WC Store API <code>category=36&amp;orderby=popularity</code></td>
+            <td>Front-end loop IDs match API order (top 10)</td>
+            <td class="pass">PASS — exact match</td>
+          </tr>
+          <tr>
+            <td>Price low → high</td>
+            <td class="url">/product-category/keytag/?orderby=price</td>
+            <td>Cheapest products first; order differs from popularity</td>
+            <td class="pass">PASS — 10647 first; distinct order</td>
+          </tr>
+          <tr>
+            <td>Price vs Store API</td>
+            <td>WC Store API <code>category=36&amp;orderby=price</code></td>
+            <td>Front-end matches API (top 10)</td>
+            <td class="pass">PASS — exact match</td>
+          </tr>
+          <tr>
+            <td>Default sort</td>
+            <td class="url">/product-category/keytag/</td>
+            <td>Menu order / catalog default (not popularity)</td>
+            <td class="pass">PASS — different from popularity</td>
+          </tr>
+          <tr>
+            <td>Sort toolbar UI</td>
+            <td>KEYTAG archive</td>
+            <td><code>.kss-toolbar</code> + orderby dropdown visible</td>
+            <td class="pass">PASS</td>
+          </tr>
+          <tr>
+            <td>Live deploy</td>
+            <td>WPCode 11822</td>
+            <td>v1.3.6 active, no syntax errors, cache cleared</td>
+            <td class="pass">PASS</td>
+          </tr>
+          <tr>
+            <td>Anonymous HTML</td>
+            <td>curl (no admin cookies)</td>
+            <td>10679 first in loop grid HTML</td>
+            <td class="pass">PASS</td>
+          </tr>
+          <tr>
+            <td>Browser verification</td>
+            <td>KEYTAG + Best selling selected</td>
+            <td>Psyduck first; sales counts descend</td>
+            <td class="pass">PASS</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>KEYTAG — Best selling (page 1, top 10)</h2>
+      <table>
+        <thead>
+          <tr><th>#</th><th>ID</th><th>Product</th><th>Sales (visible)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>10679</td><td>PSYDUCK KEYTAG</td><td>74 sold</td></tr>
+          <tr><td>2</td><td>10669</td><td>GENGAR KEYTAG</td><td>60 sold</td></tr>
+          <tr><td>3</td><td>10591</td><td>SHINY RAYQUAZA KEYTAG</td><td>46 sold</td></tr>
+          <tr><td>4</td><td>10677</td><td>SNORLAX KEYTAG</td><td>43 sold</td></tr>
+          <tr><td>5</td><td>10542</td><td>ZEKROM KEYTAG</td><td>39 sold</td></tr>
+          <tr><td>6</td><td>10548</td><td>SHINY UMBREON KEYTAG</td><td>34 sold</td></tr>
+          <tr><td>7</td><td>10569</td><td>RESHIRAM KEYTAG</td><td>30 sold</td></tr>
+          <tr><td>8</td><td>10646</td><td>UMBREON KEYTAG</td><td>25 sold</td></tr>
+          <tr><td>9</td><td>10511</td><td>DARKRAI KEYTAG</td><td>25 sold</td></tr>
+          <tr><td>10</td><td>10674</td><td>EEVEE KEYTAG</td><td>24 sold</td></tr>
+        </tbody>
+      </table>
+      <p class="meta" style="margin-top:12px;">Front-end order identical to WooCommerce Store API for category ID 36.</p>
+    </section>
+
+    <section>
+      <h2>KEYTAG — Price low to high (page 1, top 5)</h2>
+      <table>
+        <thead>
+          <tr><th>#</th><th>ID</th><th>API price (cents)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>10647</td><td>799 (€7.99)</td></tr>
+          <tr><td>2</td><td>10458</td><td>899 (€8.99)</td></tr>
+          <tr><td>3</td><td>10459</td><td>899</td></tr>
+          <tr><td>4</td><td>10460</td><td>899</td></tr>
+          <tr><td>5</td><td>10464</td><td>899</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Deployment details</h2>
+      <ul>
+        <li><strong>Plugin source:</strong> <code>wp-content/plugins/kabigon-shop-sort/kabigon-shop-sort.php</code></li>
+        <li><strong>Live snippet:</strong> WPCode #11822 “Order Dropdown On Shop Archive - Space Tech”</li>
+        <li><strong>Elementor template:</strong> Loop Grid #8380 (Current Query; ASC override removed)</li>
+        <li><strong>File size:</strong> 21,524 bytes · <code>VERSION = '1.3.6'</code></li>
+        <li><strong>Cache:</strong> WP Rocket cleared after deploy</li>
+        <li><strong>Marketing sync:</strong> <code>marketing/kabigon-shop-sort-snippet.php</code> matches plugin byte-for-byte</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Before vs after</h2>
+      <table>
+        <thead>
+          <tr><th>Sort</th><th>Before (v1.3.5)</th><th>After (v1.3.6)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Popularity</td>
+            <td>10458, 10459, 10460… (menu_order / ID)</td>
+            <td class="pass">10679 Psyduck first</td>
+          </tr>
+          <tr>
+            <td>Price</td>
+            <td>Same wrong order as popularity</td>
+            <td class="pass">10647 cheapest first</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer>
+      Kabigon Shop Sort v1.3.6 · Generated 30 June 2026 ·
+      <a href="https://github.com/mdhemalakanda/kabigon-shop-sort">github.com/mdhemalakanda/kabigon-shop-sort</a>
+    </footer>
+  </div>
+</body>
+</html>
