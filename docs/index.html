@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kabigon Shop Sort v1.3.6 — End-to-End Test Report</title>
+  <style>
+    :root {
+      --bg: #faf9f7;
+      --card: #fff;
+      --text: #1a1a1a;
+      --muted: #6b6b6b;
+      --pass: #0d7a3e;
+      --pass-bg: #e8f5ee;
+      --border: #e5e2dd;
+      --accent: #815564;
+      --step-bg: #f5f0ec;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 40px 20px 64px; }
+    header { margin-bottom: 32px; }
+    h1 { font-size: 1.75rem; margin: 0 0 8px; color: var(--accent); }
+    .meta { color: var(--muted); font-size: 0.95rem; }
+    .badge {
+      display: inline-block;
+      background: var(--pass-bg);
+      color: var(--pass);
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      margin-top: 12px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    h2 { font-size: 1.15rem; margin: 0 0 16px; }
+    h3 { font-size: 1rem; margin: 20px 0 10px; color: var(--accent); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    th { font-weight: 600; background: #f5f3f0; }
+    tr:last-child td { border-bottom: none; }
+    .pass { color: var(--pass); font-weight: 600; }
+    code, .url { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85rem; word-break: break-all; }
+    ul, ol { margin: 0; padding-left: 1.25rem; }
+    li { margin-bottom: 8px; }
+    footer { margin-top: 32px; color: var(--muted); font-size: 0.85rem; text-align: center; }
+    .steps { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .steps li {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--step-bg);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .steps .num {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .figure { margin: 16px 0 0; }
+    .figure img {
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: block;
+    }
+    .caption {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 720px) {
+      .compare { grid-template-columns: 1fr; }
+    }
+    .callout {
+      background: var(--pass-bg);
+      border-left: 4px solid var(--pass);
+      padding: 14px 16px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 16px;
+      font-size: 0.95rem;
+    }
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.9rem;
+      margin-top: 12px;
+    }
+    .flow span {
+      background: var(--step-bg);
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .flow .arrow { background: none; border: none; color: var(--muted); padding: 0 4px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Kabigon Shop Sort — End-to-End Test Report</h1>
+      <p class="meta">
+        Site: <strong>kabigonshop.com</strong> · Version: <strong>1.3.6</strong> ·
+        WPCode snippet <strong>11822</strong> · Test date: <strong>30 June 2026</strong>
+      </p>
+      <span class="badge">All critical tests passed</span>
+    </header>
+
+    <section>
+      <h2>What was fixed (plain English)</h2>
+      <p>
+        On category pages like <strong>KEYTAG</strong>, choosing <strong>Best selling</strong> used to show products in the wrong order
+        (low product IDs first). Your top seller <strong>Psyduck</strong> appeared on <strong>page 6</strong> instead of page 1.
+      </p>
+      <p>
+        That is now fixed. When a customer picks a sort option, the <strong>whole category</strong> is sorted correctly in the database
+        <em>before</em> the page is split into pages of 24 products — so page 1 always shows the real best sellers.
+      </p>
+      <div class="callout">
+        <strong>Live proof:</strong> Psyduck KEYTAG (74 sold) is now the <strong>first product</strong> on
+        <a href="https://kabigonshop.com/product-category/keytag/?orderby=popularity">KEYTAG → Best selling</a>.
+      </div>
+    </section>
+
+    <section>
+      <h2>How it works for your customers</h2>
+      <ol class="steps">
+        <li>
+          <span class="num">1</span>
+          <div>
+            <strong>Visit any shop or category page</strong> (Shop, KEYTAG, COASTER, etc.).
+            A <strong>Sort by</strong> dropdown appears above the product grid — no extra setup needed.
+          </div>
+        </li>
+        <li>
+          <span class="num">2</span>
+          <div>
+            <strong>Choose a sort option:</strong> Default, Best selling, Newest, Price low→high, Price high→low, or Top rated.
+          </div>
+        </li>
+        <li>
+          <span class="num">3</span>
+          <div>
+            <strong>The page reloads</strong> with <code>?orderby=</code> in the URL. Products reorder instantly across the full catalog.
+          </div>
+        </li>
+        <li>
+          <span class="num">4</span>
+          <div>
+            <strong>Best selling</strong> uses real WooCommerce sales data (<em>total items sold</em>).
+            You can see the sales count under each product (e.g. “74 items sold”).
+          </div>
+        </li>
+      </ol>
+
+      <div class="flow">
+        <span>Customer opens KEYTAG</span>
+        <span class="arrow">→</span>
+        <span>Selects “Best selling”</span>
+        <span class="arrow">→</span>
+        <span>URL adds <code>?orderby=popularity</code></span>
+        <span class="arrow">→</span>
+        <span>WooCommerce sorts all keytags by sales</span>
+        <span class="arrow">→</span>
+        <span>Page 1 shows Psyduck first</span>
+      </div>
+
+      <figure class="figure">
+        <img src="screenshots/01-best-selling-keytag.png" alt="KEYTAG category with Best selling selected — Psyduck KEYTAG first with 74 items sold" />
+        <p class="caption">
+          <strong>Figure 1 — Best selling on KEYTAG (live).</strong>
+          Sort dropdown set to “Best selling”. Psyduck KEYTAG is first with <strong>74 items sold</strong>,
+          followed by Gengar (60), Shiny Rayquaza (46), Snorlax (43) — descending by real sales.
+        </p>
+      </figure>
+
+      <figure class="figure">
+        <img src="screenshots/02-sort-dropdown.png" alt="Sort by dropdown on KEYTAG category page" />
+        <p class="caption">
+          <strong>Figure 2 — Sort toolbar.</strong>
+          The dropdown appears on category and shop archives. Options: Default, Best selling, Newest,
+          Price low to high, Price high to low, Top rated.
+        </p>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Best selling vs Price — different sorts, different results</h2>
+      <p>
+        A working sort system must return <strong>different product orders</strong> for different options.
+        Before the fix, popularity and price showed the same wrong order. Now they are independent:
+      </p>
+      <div class="compare">
+        <figure class="figure">
+          <img src="screenshots/01-best-selling-keytag.png" alt="Best selling sort — Psyduck first" />
+          <p class="caption"><strong>Best selling</strong> — Psyduck first (most sold)</p>
+        </figure>
+        <figure class="figure">
+          <img src="screenshots/03-price-low-to-high.png" alt="Price low to high — Mystery Keytag first at €7.99" />
+          <p class="caption"><strong>Price: low to high</strong> — Mystery KEYTAG first (€7.99)</p>
+        </figure>
+      </div>
+    </section>
+
+    <section>
+      <h2>Test results</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Test</th>
+            <th>Expected</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Best selling (KEYTAG)</td>
+            <td>Psyduck (10679) first on page 1</td>
+            <td class="pass">PASS</td>
+          </tr>
+          <tr>
+            <td>Matches WooCommerce data</td>
+            <td>Front-end order = Store API order (top 10)</td>
+            <td class="pass">PASS</td>
+          </tr>
+          <tr>
+            <td>Price low → high</td>
+            <td>Cheapest first; order ≠ Best selling</td>
+            <td class="pass">PASS</td>
+          </tr>
+          <tr>
+            <td>Sort toolbar visible</td>
+            <td>Dropdown on category archives</td>
+            <td class="pass">PASS</td>
+          </tr>
+          <tr>
+            <td>Live deploy (WPCode 11822)</td>
+            <td>v1.3.6 active, cache cleared</td>
+            <td class="pass">PASS</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>KEYTAG — Best selling (page 1, top 10)</h2>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Product</th><th>Sales</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>PSYDUCK KEYTAG</td><td>74 sold</td></tr>
+          <tr><td>2</td><td>GENGAR KEYTAG</td><td>60 sold</td></tr>
+          <tr><td>3</td><td>SHINY RAYQUAZA KEYTAG</td><td>46 sold</td></tr>
+          <tr><td>4</td><td>SNORLAX KEYTAG</td><td>43 sold</td></tr>
+          <tr><td>5</td><td>ZEKROM KEYTAG</td><td>39 sold</td></tr>
+          <tr><td>6</td><td>SHINY UMBREON KEYTAG</td><td>34 sold</td></tr>
+          <tr><td>7</td><td>RESHIRAM KEYTAG</td><td>30 sold</td></tr>
+          <tr><td>8</td><td>UMBREON KEYTAG</td><td>25 sold</td></tr>
+          <tr><td>9</td><td>DARKRAI KEYTAG</td><td>25 sold</td></tr>
+          <tr><td>10</td><td>EEVEE KEYTAG</td><td>24 sold</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Before vs after</h2>
+      <table>
+        <thead>
+          <tr><th>Sort</th><th>Before (broken)</th><th>After (v1.3.6)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Best selling</td>
+            <td>Reuniclus, Gible… (wrong ID order). Psyduck on page 6.</td>
+            <td class="pass">Psyduck first on page 1</td>
+          </tr>
+          <tr>
+            <td>Price</td>
+            <td>Same wrong order as Best selling</td>
+            <td class="pass">Cheapest products first (€7.99 Mystery KEYTAG)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Technical summary (for your developer)</h2>
+      <ul>
+        <li><strong>Root cause:</strong> Elementor Loop Grid “Current Query” bypassed WooCommerce <code>posts_clauses</code> SQL sorting.</li>
+        <li><strong>Fix:</strong> v1.3.6 forces <code>suppress_filters = false</code> and hooks <code>elementor/query/{id}</code> on the <code>WP_Query</code> instance.</li>
+        <li><strong>Deploy:</strong> WPCode snippet #11822 · Elementor template #8380 (ASC override removed) · WP Rocket cache purged.</li>
+        <li><strong>Source code:</strong> <a href="https://github.com/mdhemalakanda/kabigon-shop-sort">github.com/mdhemalakanda/kabigon-shop-sort</a></li>
+      </ul>
+    </section>
+
+    <footer>
+      Kabigon Shop Sort v1.3.6 · Screenshots captured live 30 June 2026 ·
+      <a href="https://github.com/mdhemalakanda/kabigon-shop-sort">View on GitHub</a>
+    </footer>
+  </div>
+</body>
+</html>

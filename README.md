@@ -43,7 +43,7 @@ Optional shortcode `[kabigon_shop_sort]` only if you need the dropdown in a cust
 Full end-to-end verification with **live screenshots** (client-friendly):
 
 - [reports/e2e-report-2026-06-30.html](reports/e2e-report-2026-06-30.html) — open in browser after clone
-- [GitHub Pages](https://mdhemalakanda.github.io/kabigon-shop-sort/reports/e2e-report-2026-06-30.html) — view online (after Pages enabled)
+- [View online (GitHub Pages)](https://mdhemalakanda.github.io/kabigon-shop-sort/) — includes live screenshots
 
 ## Changelog
 
