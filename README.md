@@ -40,7 +40,10 @@ Optional shortcode `[kabigon_shop_sort]` only if you need the dropdown in a cust
 
 ## E2E test report
 
-Full end-to-end verification (KEYTAG Best selling fix): [reports/e2e-report-2026-06-30.html](reports/e2e-report-2026-06-30.html)
+Full end-to-end verification with **live screenshots** (client-friendly):
+
+- [reports/e2e-report-2026-06-30.html](reports/e2e-report-2026-06-30.html) — open in browser after clone
+- [GitHub Pages](https://mdhemalakanda.github.io/kabigon-shop-sort/reports/e2e-report-2026-06-30.html) — view online (after Pages enabled)
 
 ## Changelog
 
