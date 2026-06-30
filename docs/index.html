@@ -225,8 +225,8 @@
       <p class="img-tip">Tip: click any screenshot to open a large view. Use scroll wheel, pinch, or the + / − buttons to zoom.</p>
 
       <figure class="figure">
-        <a href="screenshots/01-best-selling-keytag.png" class="report-lightbox" data-sub-html="&lt;strong&gt;Figure 1 — Best selling on KEYTAG&lt;/strong&gt;&lt;br&gt;Psyduck first with 74 items sold">
-          <img src="screenshots/01-best-selling-keytag.png" alt="KEYTAG category with Best selling selected — Psyduck KEYTAG first with 74 items sold" />
+        <a href="screenshots/01-best-selling-keytag.png?v=2" class="report-lightbox" title="Figure 1 — Best selling on KEYTAG (Psyduck first, 74 sold)">
+          <img src="screenshots/01-best-selling-keytag.png?v=2" alt="KEYTAG category with Best selling selected — Psyduck KEYTAG first with 74 items sold" />
           <span class="zoom-hint">Click to enlarge</span>
         </a>
         <p class="caption">
@@ -237,8 +237,8 @@
       </figure>
 
       <figure class="figure">
-        <a href="screenshots/02-sort-dropdown.png" class="report-lightbox" data-sub-html="&lt;strong&gt;Figure 2 — Sort toolbar&lt;/strong&gt;&lt;br&gt;Sort by dropdown on category pages">
-          <img src="screenshots/02-sort-dropdown.png" alt="Sort by dropdown on KEYTAG category page" />
+        <a href="screenshots/02-sort-dropdown.png?v=2" class="report-lightbox" title="Figure 2 — Sort toolbar dropdown">
+          <img src="screenshots/02-sort-dropdown.png?v=2" alt="Sort by dropdown on KEYTAG category page" />
           <span class="zoom-hint">Click to enlarge</span>
         </a>
         <p class="caption">
@@ -257,15 +257,15 @@
       </p>
       <div class="compare">
         <figure class="figure">
-          <a href="screenshots/01-best-selling-keytag.png" class="report-lightbox" data-sub-html="&lt;strong&gt;Best selling&lt;/strong&gt; — Psyduck first (most sold)">
-            <img src="screenshots/01-best-selling-keytag.png" alt="Best selling sort — Psyduck first" />
+          <a href="screenshots/01-best-selling-keytag.png?v=2" class="report-lightbox" title="Best selling — Psyduck first (most sold)">
+            <img src="screenshots/01-best-selling-keytag.png?v=2" alt="Best selling sort — Psyduck first" />
             <span class="zoom-hint">Click to enlarge</span>
           </a>
           <p class="caption"><strong>Best selling</strong> — Psyduck first (most sold)</p>
         </figure>
         <figure class="figure">
-          <a href="screenshots/03-price-low-to-high.png" class="report-lightbox" data-sub-html="&lt;strong&gt;Price: low to high&lt;/strong&gt; — Mystery KEYTAG first (€7.99)">
-            <img src="screenshots/03-price-low-to-high.png" alt="Price low to high — Mystery Keytag first at €7.99" />
+          <a href="screenshots/03-price-low-to-high.png?v=2" class="report-lightbox" title="Price low to high — Mystery KEYTAG first (€7.99)">
+            <img src="screenshots/03-price-low-to-high.png?v=2" alt="Price low to high — Mystery Keytag first at €7.99" />
             <span class="zoom-hint">Click to enlarge</span>
           </a>
           <p class="caption"><strong>Price: low to high</strong> — Mystery KEYTAG first (€7.99)</p>
@@ -371,31 +371,30 @@
     </footer>
   </div>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/css/lightgallery-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/lightgallery.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/plugins/zoom/lg-zoom.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/plugins/thumbnail/lg-thumbnail.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
   <script>
-    jQuery(function () {
-      var el = document.querySelector('.wrap');
-      if (!el || typeof lightGallery === 'undefined') return;
-
-      lightGallery(el, {
-        selector: '.report-lightbox',
-        plugins: [lgZoom, lgThumbnail],
-        licenseKey: '0000-0000-000-0000',
-        speed: 400,
-        download: false,
-        zoom: true,
-        actualSize: true,
-        showZoomInOutIcons: true,
-        mobileSettings: {
-          controls: true,
-          showCloseIcon: true,
-          download: false
+    jQuery(function ($) {
+      $('.wrap').magnificPopup({
+        delegate: 'a.report-lightbox',
+        type: 'image',
+        gallery: { enabled: true },
+        image: {
+          titleSrc: function (item) {
+            return item.el.attr('title') || item.el.find('img').attr('alt') || '';
+          }
         },
-        subHtmlSelectorRelative: true
+        zoom: {
+          enabled: true,
+          duration: 300,
+          easing: 'ease-in-out',
+          opener: function (openerElement) {
+            return openerElement.is('img') ? openerElement : openerElement.find('img');
+          }
+        },
+        removalDelay: 200,
+        mainClass: 'mfp-fade'
       });
     });
   </script>
