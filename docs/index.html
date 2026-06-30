@@ -79,12 +79,40 @@
       justify-content: center;
     }
     .figure { margin: 16px 0 0; }
-    .figure img {
+    .report-lightbox {
+      display: block;
+      position: relative;
+      cursor: zoom-in;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .report-lightbox:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      transform: translateY(-1px);
+    }
+    .report-lightbox img {
       width: 100%;
       height: auto;
-      border: 1px solid var(--border);
-      border-radius: 8px;
       display: block;
+      border-radius: 8px;
+    }
+    .report-lightbox .zoom-hint {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      background: rgba(26, 26, 26, 0.72);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 5px 10px;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .img-tip {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin: 12px 0 0;
     }
     .caption {
       font-size: 0.88rem;
@@ -194,8 +222,13 @@
         <span>Page 1 shows Psyduck first</span>
       </div>
 
+      <p class="img-tip">Tip: click any screenshot to open a large view. Use scroll wheel, pinch, or the + / − buttons to zoom.</p>
+
       <figure class="figure">
-        <img src="screenshots/01-best-selling-keytag.png" alt="KEYTAG category with Best selling selected — Psyduck KEYTAG first with 74 items sold" />
+        <a href="screenshots/01-best-selling-keytag.png" class="report-lightbox" data-sub-html="&lt;strong&gt;Figure 1 — Best selling on KEYTAG&lt;/strong&gt;&lt;br&gt;Psyduck first with 74 items sold">
+          <img src="screenshots/01-best-selling-keytag.png" alt="KEYTAG category with Best selling selected — Psyduck KEYTAG first with 74 items sold" />
+          <span class="zoom-hint">Click to enlarge</span>
+        </a>
         <p class="caption">
           <strong>Figure 1 — Best selling on KEYTAG (live).</strong>
           Sort dropdown set to “Best selling”. Psyduck KEYTAG is first with <strong>74 items sold</strong>,
@@ -204,7 +237,10 @@
       </figure>
 
       <figure class="figure">
-        <img src="screenshots/02-sort-dropdown.png" alt="Sort by dropdown on KEYTAG category page" />
+        <a href="screenshots/02-sort-dropdown.png" class="report-lightbox" data-sub-html="&lt;strong&gt;Figure 2 — Sort toolbar&lt;/strong&gt;&lt;br&gt;Sort by dropdown on category pages">
+          <img src="screenshots/02-sort-dropdown.png" alt="Sort by dropdown on KEYTAG category page" />
+          <span class="zoom-hint">Click to enlarge</span>
+        </a>
         <p class="caption">
           <strong>Figure 2 — Sort toolbar.</strong>
           The dropdown appears on category and shop archives. Options: Default, Best selling, Newest,
@@ -221,11 +257,17 @@
       </p>
       <div class="compare">
         <figure class="figure">
-          <img src="screenshots/01-best-selling-keytag.png" alt="Best selling sort — Psyduck first" />
+          <a href="screenshots/01-best-selling-keytag.png" class="report-lightbox" data-sub-html="&lt;strong&gt;Best selling&lt;/strong&gt; — Psyduck first (most sold)">
+            <img src="screenshots/01-best-selling-keytag.png" alt="Best selling sort — Psyduck first" />
+            <span class="zoom-hint">Click to enlarge</span>
+          </a>
           <p class="caption"><strong>Best selling</strong> — Psyduck first (most sold)</p>
         </figure>
         <figure class="figure">
-          <img src="screenshots/03-price-low-to-high.png" alt="Price low to high — Mystery Keytag first at €7.99" />
+          <a href="screenshots/03-price-low-to-high.png" class="report-lightbox" data-sub-html="&lt;strong&gt;Price: low to high&lt;/strong&gt; — Mystery KEYTAG first (€7.99)">
+            <img src="screenshots/03-price-low-to-high.png" alt="Price low to high — Mystery Keytag first at €7.99" />
+            <span class="zoom-hint">Click to enlarge</span>
+          </a>
           <p class="caption"><strong>Price: low to high</strong> — Mystery KEYTAG first (€7.99)</p>
         </figure>
       </div>
@@ -328,5 +370,34 @@
       <a href="https://github.com/mdhemalakanda/kabigon-shop-sort">View on GitHub</a>
     </footer>
   </div>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/css/lightgallery-bundle.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/lightgallery.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/plugins/zoom/lg-zoom.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/plugins/thumbnail/lg-thumbnail.umd.min.js"></script>
+  <script>
+    jQuery(function () {
+      var el = document.querySelector('.wrap');
+      if (!el || typeof lightGallery === 'undefined') return;
+
+      lightGallery(el, {
+        selector: '.report-lightbox',
+        plugins: [lgZoom, lgThumbnail],
+        licenseKey: '0000-0000-000-0000',
+        speed: 400,
+        download: false,
+        zoom: true,
+        actualSize: true,
+        showZoomInOutIcons: true,
+        mobileSettings: {
+          controls: true,
+          showCloseIcon: true,
+          download: false
+        },
+        subHtmlSelectorRelative: true
+      });
+    });
+  </script>
 </body>
 </html>
